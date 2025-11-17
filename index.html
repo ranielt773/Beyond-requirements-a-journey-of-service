@@ -198,12 +198,58 @@
             border-radius: 10px;
             overflow: hidden;
             box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            position: relative;
+            height: 400px;
         }
 
-        .about-img img {
+        .image-slider {
             width: 100%;
-            height: auto;
-            display: block;
+            height: 100%;
+            position: relative;
+        }
+
+        .slide {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            opacity: 0;
+            transition: opacity 1s ease-in-out;
+        }
+
+        .slide.active {
+            opacity: 1;
+        }
+
+        .slide img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .slider-controls {
+            position: absolute;
+            bottom: 15px;
+            left: 0;
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            z-index: 10;
+        }
+
+        .slider-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background-color: rgba(255, 255, 255, 0.5);
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .slider-dot.active {
+            background-color: white;
         }
 
         /* Hobbies Section */
@@ -481,15 +527,28 @@
                     <h3>Passionate About Making a Difference</h3>
                     <p>The journey of CWTS 1 has been really meaningful and an eye-opener. I had thought, at the beginning, that it was just another subject to be finished, but as time passed by, it helped me understand that CWTS is about service, discipline, and social responsibility. This will surely motivate students like me into being active citizens and create a love for community and the environment.</p>
                     <p>My activities have helped me understand the importance of serving others and of working in a group. Each activity has engaged us in how we should cooperate, communicate, and make a difference for betterment in small ways. Contributions to cleaning our community, awareness projects, or even the smallest acts of kindness make the society better and safer.</p>
-                    <p>One thing I really appreciate about CWTS 1 is that it helps me discover my role as a student in nation-building. It teaches that real change starts with awareness and action.This subject doesn’t just develop our skills; it even shapes our values and strengthens our character.</p>
+                    <p>One thing I really appreciate about CWTS 1 is that it helps me discover my role as a student in nation-building. It teaches that real change starts with awareness and action.This subject doesn't just develop our skills; it even shapes our values and strengthens our character.</p>
                     <p>I want to grow into a more responsible, kind, and service-oriented individual as I go through life. I am reminded by CWTS 1 that helping others is a heartfelt commitment as well as a duty</p>
                     <p> I'll sum up by saying that CWTS 1 is about becoming a better version of ourselves, learning how to make a difference, one tiny act at a time rather than just learning.</p>
                     <a href="#contact" class="btn">Let's Connect</a>
                 </div>
                 <div class="about-img">
-                    <!-- Placeholder for profile image -->
-                    <div style="width:100%; height:400px; background:linear-gradient(135deg, #3498db, #2c3e50); display:flex; align-items:center; justify-content:center; color:white; font-size:24px;">
-                        <img src="assets/b.jpeg" alt="">
+                    <!-- Image Slider -->
+                    <div class="image-slider">
+                        <div class="slide active">
+                            <img src="assets/a.jpeg" alt="Image A">
+                        </div>
+                        <div class="slide">
+                            <img src="assets/b.jpeg" alt="Image B">
+                        </div>
+                        <div class="slide">
+                            <img src="assets/c.jpeg" alt="Image C">
+                        </div>
+                        <div class="slider-controls">
+                            <div class="slider-dot active" data-index="0"></div>
+                            <div class="slider-dot" data-index="1"></div>
+                            <div class="slider-dot" data-index="2"></div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -596,6 +655,46 @@
         document.querySelectorAll('.nav-links a').forEach(link => {
             link.addEventListener('click', () => {
                 document.querySelector('.nav-links').classList.remove('active');
+            });
+        });
+
+        // Image Slider Functionality
+        document.addEventListener('DOMContentLoaded', function() {
+            const slides = document.querySelectorAll('.slide');
+            const dots = document.querySelectorAll('.slider-dot');
+            let currentSlide = 0;
+            const slideInterval = 3000; // 3 seconds
+            
+            function showSlide(index) {
+                // Remove active class from all slides and dots
+                slides.forEach(slide => slide.classList.remove('active'));
+                dots.forEach(dot => dot.classList.remove('active'));
+                
+                // Add active class to current slide and dot
+                slides[index].classList.add('active');
+                dots[index].classList.add('active');
+                
+                currentSlide = index;
+            }
+            
+            function nextSlide() {
+                let nextIndex = (currentSlide + 1) % slides.length;
+                showSlide(nextIndex);
+            }
+            
+            // Set up automatic slide change
+            let slideTimer = setInterval(nextSlide, slideInterval);
+            
+            // Add click event to dots for manual navigation
+            dots.forEach(dot => {
+                dot.addEventListener('click', function() {
+                    clearInterval(slideTimer); // Stop automatic sliding when manually navigating
+                    const index = parseInt(this.getAttribute('data-index'));
+                    showSlide(index);
+                    
+                    // Restart automatic sliding after manual navigation
+                    slideTimer = setInterval(nextSlide, slideInterval);
+                });
             });
         });
     </script>
